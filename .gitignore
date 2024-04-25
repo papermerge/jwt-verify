@@ -1,0 +1,7 @@
+.idea/
+.env
+.envrc
+build/
+.eggs/
+.venv
+__pycache__
