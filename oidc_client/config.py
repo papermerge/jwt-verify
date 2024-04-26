@@ -17,7 +17,8 @@ class Algs(str, Enum):
 
 class Settings(BaseSettings):
     client_secret: str
-    redirect_url: str
+    client_id: str
+    authorize_endpoint: str
     algorithms: list[Algs] = ['ES512']
 
 

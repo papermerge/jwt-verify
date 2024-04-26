@@ -21,25 +21,12 @@ logger = logging.getLogger(__name__)
 async def verify_endpoint(
     request: Request,
 ) -> Response:
-    """
-    Example of redirect URL:
-        https://auth.k8s.trusel.net/realms/demo/protocol/openid-connect/auth?
-            response_type=code
-            &
-            client_id=papermerge
-            &
-            redirect_uri=http%3A%2F%2Flocalhost%3A9000%2Foidc%2Fcallback
-            &
-            scope=openid+email+profile
-            &
-            state=izM33ATiMqsUXnnfVroDKdhT1BR0AjH85QoWqy8K
-    """
     token = utils.get_token(request)
 
     if not token:
         return RedirectResponse(
             status_code=307,
-            url=settings.redirect_url
+            url=utils.get_authorize_url()
         )
 
     try:
@@ -51,7 +38,7 @@ async def verify_endpoint(
     except JWTError:
         return RedirectResponse(
             status_code=307,
-            url=settings.redirect_url
+            url=utils.get_authorize_url()
         )
 
     return Response(status_code=status.HTTP_200_OK)

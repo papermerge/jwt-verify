@@ -1,3 +1,4 @@
+import urllib.parse
 from fastapi import Request, FastAPI
 from fastapi.security.utils import get_authorization_scheme_param
 
@@ -35,3 +36,20 @@ def from_cookie(request: Request) -> str | None:
 
 def get_token(request: Request) -> str | None:
     return from_cookie(request) or from_header(request)
+
+
+def get_authorize_url() -> str:
+    """
+    Returns authorization URL/Endpoint
+
+    Authorization endpoint description:
+    - https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint  # noqa
+    - https://auth0.com/docs/authenticate/protocols/oauth#authorization-endpoint
+    - https://curity.io/resources/learn/oauth-code-flow/#request-parameters
+    """
+    params = urllib.parse.urlencode({
+        'client_id': settings.client_id,
+        'response_type': 'code',
+    })
+    url = f"{settings.authorize_endpoint}?{params}"
+    return url
