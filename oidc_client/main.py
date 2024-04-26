@@ -4,9 +4,9 @@ from fastapi import FastAPI, Response, Request, status
 from fastapi.responses import RedirectResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+import httpx
 
-from oidc_client import utils
-from oidc_client import config
+from oidc_client import utils, config, types, cache
 
 
 app = FastAPI()
@@ -51,38 +51,55 @@ async def verify_endpoint(
 async def oidc_callback(
     request: Request,
 ) -> Response:
-    """
-    OIDC callback
-
-    After successful authentication OIDC provider will send a POST
-    to this endpoint.
-    The important parts from the incoming request are:
-        - `code`
-        - `state`
-
-    Both `code` and `state` are used to retrieve access token and user token
-    from the OIDC provider.
-    """
-    # get "code" from query params `request.query_params`
-    # use code to obtain access tokens by posting to auth endpoint
-    """
-    auth_server_url(
-        window.__PAPERMERGE_RUNTIME_CONFIG__.oidc.client_id,
-        payload?.code,
-        window.__PAPERMERGE_RUNTIME_CONFIG__.oidc.redirect_url,
-        payload?.state,
-    );
-    fetch(url, { method:'POST' })
-      .then(response => response.json())
-      .then(
-        data => {
-          console.log(data);
-          console.log(`Redirecting to the origin ${window.location.origin}/app`);
-          window.location.href = `${window.location.origin}/app`;
+    async with httpx.AsyncClient() as client:
+        params = {
+            'client_id': settings.client_id,
+            'client_secret': settings.client_secret,
+            'code': request.query_params['code'],
+            'grant_type': 'authorization_code'
         }
-      ).catch(error => {
-        console.log(`There was an error ==='${error}'===`);
-      });
-    """
+        logger.debug(f"params: {params}")
 
-    return Response(status_code=status.HTTP_200_OK)
+        response = await client.post(
+            settings.access_token_endpoint,
+            data=params,
+            headers={
+                'Content-Type': 'application/x-www-form-urlencoded'
+            }
+        )
+        logger.debug(
+            f"response_code = {response.status_code}"
+        )
+        logger.debug(f"response_text = {response.text}")
+
+        if not response.is_success:
+            message = " ".join([
+                f"response.status_code = {response.status_code}",
+                f"response.text = {response.text}"
+                f"response.content = {response.content}"
+            ])
+            logger.debug(message)
+            return Response(
+                status_code=response.status_code,
+                content=response.content,
+            )
+
+        data = response.json()
+        logger.debug(f"response.json={data}")
+        token = types.Token(
+            access_token=data['access_token'],
+            expires_in=data['expires_in'],
+            refresh_token=data['refresh_token'],
+            refresh_expires_in=data['refresh_expires_in'],
+            scope=data['scope'],
+            token_type=data['token_type']
+        )
+        cache.save_token(key=token.access_token, value=token)
+        result = Response(status_code=status.HTTP_200_OK)
+
+        result.set_cookie(
+            key='access_token',
+            value=token.access_token
+        )
+
+    return result

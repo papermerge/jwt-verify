@@ -1,6 +1,7 @@
 import urllib.parse
 from fastapi import Request, FastAPI
 from fastapi.security.utils import get_authorization_scheme_param
+from oidc_client import types
 
 from .config import Settings
 
@@ -53,3 +54,7 @@ def get_authorize_url() -> str:
     })
     url = f"{settings.authorize_endpoint}?{params}"
     return url
+
+
+def is_almost_expired(token: types.Token) -> bool:
+    pass

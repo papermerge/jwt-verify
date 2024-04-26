@@ -11,12 +11,14 @@ fastapi = "^0.110.2"
 python-jose = "^3.3.0"
 pydantic-settings = "^2.2.1"
 uvicorn = "^0.29.0"
+httpx = "^0.27.0"
+pydantic = "^2.7.1"
 
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.12.2"
 
 [tool.taskipy.tasks]
-server = "uvicorn oidc_client.main:app --host 0.0.0.0 --port 8010"
+server = "uvicorn oidc_client.main:app --port 8010 --log-level debug"
 
 [build-system]
 requires = ["poetry-core"]

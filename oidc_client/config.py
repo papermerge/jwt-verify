@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     client_secret: str
     client_id: str
     authorize_endpoint: str
+    access_token_endpoint: str
     algorithms: list[Algs] = ['ES512']
 
 
