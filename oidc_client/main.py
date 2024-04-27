@@ -20,7 +20,12 @@ logger = logging.getLogger(__name__)
 async def verify_endpoint(
     request: Request,
 ) -> Response:
-    """Verifies if JWT token is present, valid and not expired"""
+    """Verifies if JWT token is present, valid and not expired
+
+    When access token is expired - it refreshes it. On successful
+    token refresh new access token is set in `access_token` Cookie header of the
+    response.
+    """
     access_token: str = utils.get_token(request)
     result = Response(status_code=status.HTTP_200_OK)
 
@@ -80,7 +85,11 @@ async def verify_endpoint(
 async def oidc_callback(
     request: Request,
 ) -> Response:
-    """Retrieve tokens from OIDC provider based on received `code`"""
+    """Retrieve tokens from OIDC provider based on received `code`
+
+    On successful token retrieval will set `access_token` Cookie header
+    of the response.
+    """
     code = request.query_params['code']
     token_data, status_code, content = await http_client.get_token(code)
 
