@@ -16,12 +16,16 @@ class Algs(str, Enum):
 
 
 class Settings(BaseSettings):
-    client_secret: str
-    client_id: str
+    client_secret: str  # i.e. OIDC client secret
+    client_id: str      # i.e. OIDC client secret
+    # OIDC provider "authorize" endpoint
+    # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/auth
     authorize_endpoint: str
+    # OIDC provider "token" endpoint
+    # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
     access_token_endpoint: str
     algorithms: list[Algs] = ['ES512']
-    redis_url: str
+    redis_url: str  # as cache store
 
 
 @lru_cache()
