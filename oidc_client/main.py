@@ -20,6 +20,7 @@ logger = logging.getLogger(__name__)
 async def verify_endpoint(
     request: Request,
 ) -> Response:
+    """Verifies if JWT token is present, valid and not expired"""
     access_token: str = utils.get_token(request)
     result = Response(status_code=status.HTTP_200_OK)
 
@@ -79,6 +80,7 @@ async def verify_endpoint(
 async def oidc_callback(
     request: Request,
 ) -> Response:
+    """Retrieve tokens from OIDC provider based on received `code`"""
     code = request.query_params['code']
     token_data, status_code, content = await http_client.get_token(code)
 
