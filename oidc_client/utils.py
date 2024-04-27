@@ -39,7 +39,7 @@ def get_token(request: Request) -> str | None:
     return from_cookie(request) or from_header(request)
 
 
-def get_authorize_url() -> str:
+def authorize_url() -> str:
     """
     Returns authorization URL/Endpoint
 

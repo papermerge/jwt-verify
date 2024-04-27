@@ -21,6 +21,7 @@ class Settings(BaseSettings):
     authorize_endpoint: str
     access_token_endpoint: str
     algorithms: list[Algs] = ['ES512']
+    redis_url: str
 
 
 @lru_cache()

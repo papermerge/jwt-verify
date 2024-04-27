@@ -1,12 +1,12 @@
 import logging
 
 from fastapi import FastAPI, Response, Request, status
-from fastapi.responses import RedirectResponse
+from fastapi.responses import RedirectResponse, PlainTextResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 import httpx
 
-from oidc_client import utils, config, types, cache
+from oidc_client import utils, config, types, cache, http_client
 
 
 app = FastAPI()
@@ -21,27 +21,51 @@ logger = logging.getLogger(__name__)
 async def verify_endpoint(
     request: Request,
 ) -> Response:
-    token = utils.get_token(request)
+    access_token = utils.get_token(request)
+    result = Response(status_code=status.HTTP_200_OK)
 
-    if not token:
-        return RedirectResponse(
-            status_code=307,
-            url=utils.get_authorize_url()
-        )
+    if not access_token:
+        return RedirectResponse(status_code=307, url=utils.authorize_url())
 
     try:
         jwt.decode(
-            token,
+            access_token,
             settings.client_secret,
             algorithms=settings.algorithms
         )
     except JWTError:
-        return RedirectResponse(
-            status_code=307,
-            url=utils.get_authorize_url()
-        )
+        return RedirectResponse(status_code=307, url=utils.authorize_url())
 
-    return Response(status_code=status.HTTP_200_OK)
+    token_data, access_expired = await cache.get_token(access_token)
+    if token_data is None:
+        logger.warning(
+            f"expired token: access_token={access_token} "
+            f"token_data={token_data}"
+        )
+        return RedirectResponse(status_code=307, url=utils.authorize_url())
+
+    if token_data.access_token != access_token:
+        logger.error(
+            "cached token differs from original"
+            f"access_token={access_token} "
+            f"token_data={token_data}"
+        )
+        msg = "cached token differs from original"
+        return PlainTextResponse(status_code=500, content=msg)
+
+    if access_expired:
+        new_token_data = await http_client.refresh_token(token_data)
+        if new_token_data is None:
+            logger.debug(f"Was not able to renew {token_data}")
+            return RedirectResponse(status_code=307, url=utils.authorize_url())
+
+        await cache.save_token(
+            key=new_token_data.access_token,
+            token=new_token_data
+        )
+        result.set_cookie('access_token', value=new_token_data.access_token)
+
+    return result
 
 
 @app.api_route(
@@ -86,7 +110,7 @@ async def oidc_callback(
 
         data = response.json()
         logger.debug(f"response.json={data}")
-        token = types.Token(
+        token = types.TokenData(
             access_token=data['access_token'],
             expires_in=data['expires_in'],
             refresh_token=data['refresh_token'],
@@ -94,12 +118,9 @@ async def oidc_callback(
             scope=data['scope'],
             token_type=data['token_type']
         )
-        cache.save_token(key=token.access_token, value=token)
+        await cache.save_token(key=token.access_token, token=token)
         result = Response(status_code=status.HTTP_200_OK)
 
-        result.set_cookie(
-            key='access_token',
-            value=token.access_token
-        )
+        result.set_cookie('access_token', value=token.access_token)
 
     return result
