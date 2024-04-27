@@ -1,3 +1,12 @@
+"""
+Notes:
+Access tokens typically have a shorter life span while refresh tokens have a
+longer one
+
+References:
+ - https://curity.io/resources/learn/oauth-refresh/
+"""
+
 import aioredis
 from oidc_client import types, config
 
