@@ -20,7 +20,7 @@ logger = logging.getLogger(__name__)
 async def verify_endpoint(
     request: Request,
 ) -> Response:
-    access_token = utils.get_token(request)
+    access_token: str = utils.get_token(request)
     result = Response(status_code=status.HTTP_200_OK)
 
     if not access_token:
