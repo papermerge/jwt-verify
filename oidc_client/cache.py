@@ -32,7 +32,7 @@ async def get_token(key: str) -> tuple[types.TokenData | None, bool]:
         access_expired = True
         # OK, now we know that access token has expired, but still we don't have
         # token data. Let's get token data using `refresh_{key}`
-        # This aproach works as refresh token has longer TTL as access token
+        # This approach works as refresh token has longer TTL as access token
         value = await redis.get(f"refresh_{key}")
         if value is None:
             # this means, both access_token and refresh_token had expired
