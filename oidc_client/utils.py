@@ -54,7 +54,3 @@ def authorize_url() -> str:
     })
     url = f"{settings.authorize_endpoint}?{params}"
     return url
-
-
-def is_almost_expired(token: types.Token) -> bool:
-    pass
