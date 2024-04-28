@@ -3,10 +3,8 @@ from enum import Enum
 from pathlib import Path
 from pydantic_settings import BaseSettings
 
+
 class Algs(str, Enum):
-    HS256 = "HS256"
-    HS384 = "HS384"
-    HS512 = "HS512"
     RS256 = "RS256"
     RS384 = "RS384"
     RS512 = "RS512"
