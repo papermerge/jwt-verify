@@ -1,6 +1,6 @@
 import logging
 import httpx
-from oidc_client import types, config
+from . import types, config
 
 settings = config.get_settings()
 logger = logging.getLogger(__name__)

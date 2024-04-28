@@ -5,7 +5,7 @@ from fastapi.responses import RedirectResponse, PlainTextResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
 
-from oidc_client import utils, config, cache, http_client
+from . import utils, config, cache, http_client
 
 
 app = FastAPI()
