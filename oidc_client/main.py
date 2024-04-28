@@ -15,6 +15,8 @@ settings = config.get_settings()
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 logger = logging.getLogger(__name__)
 
+public_cert = open(settings.public_key, 'r').read()
+
 
 @app.get("/verify")
 async def verify_endpoint(
@@ -36,8 +38,14 @@ async def verify_endpoint(
         # is JWT signature valid?
         jwt.decode(
             access_token,
-            settings.client_secret,
-            algorithms=settings.algorithms
+            public_cert,
+            algorithms=settings.algorithms,
+            options={
+                'verify_aud': False,
+                'verify_iss': False,
+                'verify_sub': False,
+                'verify_jti': False,
+            }
         )
     except JWTError as ex:
         # invalid signature

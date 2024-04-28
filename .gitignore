@@ -5,3 +5,4 @@ build/
 .eggs/
 .venv
 __pycache__
+public.key

@@ -1,7 +1,7 @@
 from functools import lru_cache
 from enum import Enum
+from pathlib import Path
 from pydantic_settings import BaseSettings
-
 
 class Algs(str, Enum):
     HS256 = "HS256"
@@ -24,7 +24,8 @@ class Settings(BaseSettings):
     # OIDC provider "token" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
     access_token_endpoint: str
-    algorithms: list[Algs] = ['HS256']
+    algorithms: list[Algs] = ['RS256']
+    public_key: Path  # path to public key file; used to validate jwt tokens
     redis_url: str  # as cache store
     cookie_name: str = 'access_token'
 
