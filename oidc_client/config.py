@@ -24,8 +24,9 @@ class Settings(BaseSettings):
     # OIDC provider "token" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
     access_token_endpoint: str
-    algorithms: list[Algs] = ['ES512']
+    algorithms: list[Algs] = ['HS256']
     redis_url: str  # as cache store
+    cookie_name: str = 'access_token'
 
 
 @lru_cache()

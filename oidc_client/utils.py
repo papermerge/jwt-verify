@@ -1,7 +1,6 @@
 import urllib.parse
 from fastapi import Request, FastAPI
 from fastapi.security.utils import get_authorization_scheme_param
-from oidc_client import types
 
 from .config import Settings
 
@@ -31,7 +30,7 @@ def from_header(request: Request) -> str | None:
 
 
 def from_cookie(request: Request) -> str | None:
-    cookie_name = settings.client_secret
+    cookie_name = settings.cookie_name
     return request.cookies.get(cookie_name, None)
 
 

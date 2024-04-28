@@ -39,7 +39,7 @@ async def verify_endpoint(
             settings.client_secret,
             algorithms=settings.algorithms
         )
-    except JWTError:
+    except JWTError as ex:
         # invalid signature
         return RedirectResponse(status_code=307, url=utils.authorize_url())
 
