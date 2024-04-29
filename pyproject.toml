@@ -19,7 +19,7 @@ redis = "^5.0.4"
 taskipy = "^1.12.2"
 
 [tool.taskipy.tasks]
-server = "uvicorn oidc_client.main:app --port 8010 --log-level debug"
+server = "uvicorn oidc_app.main:app --port 8010 --log-level debug"
 
 [build-system]
 requires = ["poetry-core"]
