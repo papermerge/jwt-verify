@@ -1,6 +1,6 @@
 FROM python:3.11-slim-bookworm
 
-ENV APP_DIR=/app
+ENV APP_DIR=/oidc_app
 WORKDIR ${APP_DIR}
 
 COPY poetry.lock pyproject.toml README.md ${APP_DIR}/
