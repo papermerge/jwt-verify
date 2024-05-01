@@ -23,9 +23,13 @@ class Settings(BaseSettings):
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
     access_token_endpoint: str
     algorithms: list[Algs] = ['RS256']
+    # `public_key` actually can be extracted from OIDC provider
+    # TODO: extract public keu from OIDC provider
     public_key: Path  # path to public key file; used to validate jwt tokens
     redis_url: str  # as cache store
     cookie_name: str = 'access_token'
+    # `home_url` actually can be extracted from OIDC provider
+    home_url: str  # TODO: extract it from OIDC provider
 
 
 @lru_cache()

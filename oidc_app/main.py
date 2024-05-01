@@ -106,7 +106,9 @@ async def oidc_callback(
 
     await cache.save_token(key=token_data.access_token, token=token_data)
 
-    response = Response(status_code=status.HTTP_200_OK)
+    response = RedirectResponse(status_code=307, url=settings.home_url)
+    logger.debug("Set 'access_token' cookie")
     response.set_cookie('access_token', value=token_data.access_token)
+    logger.debug(f"Redirect to home_url={settings.home_url}")
 
     return response
