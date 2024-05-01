@@ -14,7 +14,7 @@ async def get_token(code: str) -> tuple[
     async with httpx.AsyncClient() as client:
         params = {
             'client_id': settings.papermerge__auth__oidc_client_id,
-            'client_secret': settings.papermerge__auth__oidc_client_id,
+            'client_secret': settings.papermerge__auth__oidc_client_secret,
             'code': code,
             'grant_type': 'authorization_code'
         }
