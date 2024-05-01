@@ -14,18 +14,22 @@ class Algs(str, Enum):
 
 
 class Settings(BaseSettings):
-    client_secret: str  # i.e. OIDC client secret
-    client_id: str      # i.e. OIDC client secret
+    papermerge__auth__oidc_client_secret: str
+    papermerge__auth__oidc_client_id: str
+    papermerge__auth__oidc_access_token_url: str
     # OIDC provider "authorize" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/auth
-    authorize_endpoint: str
+    papermerge__auth__oidc_authorize_url: str
     # OIDC provider "token" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
-    access_token_endpoint: str
+    papermerge__auth__access_token_url: str
     algorithms: list[Algs] = ['RS256']
+    # `public_key` actually can be extracted from OIDC provider
+    # TODO: extract public keu from OIDC provider
     public_key: Path  # path to public key file; used to validate jwt tokens
     redis_url: str  # as cache store
     cookie_name: str = 'access_token'
+    home_url: str # TODO: to be extracted from well known OIDC config
 
 
 @lru_cache()
