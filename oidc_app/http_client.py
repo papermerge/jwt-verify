@@ -21,7 +21,7 @@ async def get_token(code: str) -> tuple[
         logger.debug(f"params: {params}")
 
         response = await client.post(
-            settings.papermerge__auth__access_token_url,
+            settings.papermerge__auth__oidc_access_token_url,
             data=params,
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded'

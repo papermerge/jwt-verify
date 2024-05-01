@@ -48,7 +48,7 @@ def authorize_url() -> str:
     - https://curity.io/resources/learn/oauth-code-flow/#request-parameters
     """
     params = urllib.parse.urlencode({
-        'client_id': settings.client_id,
+        'client_id': settings.papermerge__auth__oidc_client_id,
         'response_type': 'code',
     })
     url = f"{settings.papermerge__auth__oidc_authorize_url}?{params}"

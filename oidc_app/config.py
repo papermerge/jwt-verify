@@ -22,7 +22,6 @@ class Settings(BaseSettings):
     papermerge__auth__oidc_authorize_url: str
     # OIDC provider "token" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
-    papermerge__auth__access_token_url: str
     algorithms: list[Algs] = ['RS256']
     # `public_key` actually can be extracted from OIDC provider
     # TODO: extract public keu from OIDC provider
