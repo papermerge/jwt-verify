@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Papermerge OIDC App"
-version = "0.1.0"
+version = "0.1.2"
 description = "Magically transforms Papermerge into OIDC client"
 authors = ["Eugen Ciur <eugen@papermerge.com>"]
 readme = "README.md"
@@ -14,6 +14,7 @@ uvicorn = "^0.29.0"
 httpx = "^0.27.0"
 pydantic = "^2.7.1"
 redis = "^5.0.4"
+pyyaml = "^6.0.1"
 
 [tool.poetry.group.dev.dependencies]
 taskipy = "^1.12.2"
