@@ -51,5 +51,5 @@ def authorize_url() -> str:
         'client_id': settings.client_id,
         'response_type': 'code',
     })
-    url = f"{settings.authorize_endpoint}?{params}"
+    url = f"{settings.papermerge__auth__oidc_authorize_url}?{params}"
     return url

@@ -13,15 +13,15 @@ async def get_token(code: str) -> tuple[
 ]:
     async with httpx.AsyncClient() as client:
         params = {
-            'client_id': settings.client_id,
-            'client_secret': settings.client_secret,
+            'client_id': settings.papermerge__auth__oidc_client_id,
+            'client_secret': settings.papermerge__auth__oidc_client_id,
             'code': code,
             'grant_type': 'authorization_code'
         }
         logger.debug(f"params: {params}")
 
         response = await client.post(
-            settings.access_token_endpoint,
+            settings.papermerge__auth__access_token_url,
             data=params,
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded'
@@ -62,15 +62,15 @@ async def refresh_token(old_token: types.TokenData) -> tuple[
 ]:
     async with httpx.AsyncClient() as client:
         params = {
-            'client_id': settings.client_id,
-            'client_secret': settings.client_secret,
+            'client_id': settings.papermerge__auth__oidc_client_id,
+            'client_secret': settings.papermerge__auth__oidc_client_secret,
             'grant_type': 'refresh_token',
             'refresh_token': old_token.refresh_token
         }
         logger.debug(f"params: {params}")
 
         response = await client.post(
-            settings.access_token_endpoint,
+            settings.papermerge__auth__oidc_access_token_url,
             data=params,
             headers={
                 'Content-Type': 'application/x-www-form-urlencoded'
