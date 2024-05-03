@@ -49,7 +49,9 @@ def authorize_url() -> str:
     """
     params = urllib.parse.urlencode({
         'client_id': settings.papermerge__auth__oidc_client_id,
+        'scope': 'openid',
         'response_type': 'code',
+        'redirect_uri': settings.papermerge__auth__oidc_redirect_url
     })
     url = f"{settings.papermerge__auth__oidc_authorize_url}?{params}"
     return url

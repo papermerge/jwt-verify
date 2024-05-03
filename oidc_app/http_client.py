@@ -16,7 +16,8 @@ async def get_token(code: str) -> tuple[
             'client_id': settings.papermerge__auth__oidc_client_id,
             'client_secret': settings.papermerge__auth__oidc_client_secret,
             'code': code,
-            'grant_type': 'authorization_code'
+            'grant_type': 'authorization_code',
+            'redirect_uri': settings.papermerge__auth__oidc_redirect_url
         }
         logger.debug(f"params: {params}")
 
