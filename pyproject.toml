@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "Papermerge OIDC App"
-version = "0.1.2"
+version = "0.1.3"
 description = "Magically transforms Papermerge into OIDC client"
 authors = ["Eugen Ciur <eugen@papermerge.com>"]
 readme = "README.md"

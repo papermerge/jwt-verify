@@ -16,12 +16,13 @@ class Algs(str, Enum):
 class Settings(BaseSettings):
     papermerge__auth__oidc_client_secret: str
     papermerge__auth__oidc_client_id: str
+    # OIDC provider "token" endpoint
+    # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
     papermerge__auth__oidc_access_token_url: str
     # OIDC provider "authorize" endpoint
     # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/auth
     papermerge__auth__oidc_authorize_url: str
-    # OIDC provider "token" endpoint
-    # for Keycloak it is <domain>/realms/<realm>/protocol/openid-connect/token
+    papermerge__auth__oidc_redirect_url: str
     algorithms: list[Algs] = ['RS256']
     # `public_key` actually can be extracted from OIDC provider
     # TODO: extract public keu from OIDC provider
