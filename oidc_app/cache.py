@@ -13,7 +13,7 @@ from . import types, config
 
 
 settings = config.get_settings()
-store = redis.from_url(settings.redis_url)
+store = redis.from_url(settings.papermerge__redis__url)
 
 
 async def save_token(key: str, token: types.TokenData) -> None:
