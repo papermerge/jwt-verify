@@ -4,6 +4,7 @@ from fastapi import FastAPI, Response, Request, status
 from fastapi.responses import RedirectResponse, PlainTextResponse
 from fastapi.security import OAuth2PasswordBearer
 from jose import JWTError, jwt
+from jose.exceptions import ExpiredSignatureError
 
 from . import utils, config, cache, http_client
 
@@ -49,6 +50,8 @@ async def verify_endpoint(
                 'verify_jti': False,
             }
         )
+    except ExpiredSignatureError:
+        logger.debug("Expired signature. Will try to refresh.")
     except JWTError as ex:
         # invalid signature
         logger.debug('Invalid signature')
@@ -84,10 +87,12 @@ async def verify_endpoint(
             )
             return RedirectResponse(status_code=307, url=utils.authorize_url())
 
+        logger.debug("Save token")
         await cache.save_token(
             key=new_token_data.access_token,
             token=new_token_data
         )
+        logger.debug('Set cookie')
         result.set_cookie('access_token', value=new_token_data.access_token)
 
     return result
