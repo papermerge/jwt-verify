@@ -28,10 +28,12 @@ async def verify_endpoint(
     token refresh new access token is set in `access_token` Cookie header of the
     response.
     """
+    logger.debug('Verify endpoint')
     access_token: str = utils.get_token(request)
     result = Response(status_code=status.HTTP_200_OK)
 
     if not access_token:
+        logger.debug('Access token is missing')
         return RedirectResponse(status_code=307, url=utils.authorize_url())
 
     try:
@@ -49,6 +51,7 @@ async def verify_endpoint(
         )
     except JWTError as ex:
         # invalid signature
+        logger.debug('Invalid signature')
         return RedirectResponse(status_code=307, url=utils.authorize_url())
 
     token_data, access_expired = await cache.get_token(access_token)
@@ -69,6 +72,7 @@ async def verify_endpoint(
         return PlainTextResponse(status_code=500, content=msg)
 
     if access_expired:
+        logger.debug('Access token expired')
         new_token_data, status_code, content = await http_client.refresh_token(
             token_data
         )
